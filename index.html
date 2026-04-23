@@ -1,114 +1,37 @@
-🧱 Door System
-using UnityEngine;
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Yusuf'un Oyunu</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #111; color: #00ff00; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: 'Courier New', Courier, monospace; }
+        #game-container { border: 2px solid #00ff00; padding: 20px; position: relative; width: 80vw; height: 70vh; overflow: hidden; }
+        .box { width: 40px; height: 40px; background: red; position: absolute; box-shadow: 0 0 10px red; border-radius: 5px; transition: 0.1s; }
+        .controls { margin-top: 10px; color: #888; }
+    </style>
+</head>
+<body>
+    <h1>YUSUF CANTAA ONLINE</h1>
+    <div id="game-container">
+        <div id="player" class="box" style="top: 50%; left: 50%;"></div>
+    </div>
+    <div class="controls">W-A-S-D ile hareket et | Bosluk ile renk degistir!</div>
 
-public class DoorSystem : MonoBehaviour
-{
-    public Transform spawnPoint;
-    public GameObject npcPrefab;
-    private GameObject currentNPC;
+    <script>
+        const player = document.getElementById('player');
+        let topPos = 50;
+        let leftPos = 50;
 
-    public void SpawnCustomer()
-    {
-        if (currentNPC != null) return;
-
-        currentNPC = Instantiate(npcPrefab, spawnPoint.position, spawnPoint.rotation);
-        Debug.Log("Kapıda biri var...");
-    }
-
-    public void OpenDoor()
-    {
-        if (currentNPC != null)
-        {
-            Debug.Log("Müşteri içeri alındı");
-            currentNPC.GetComponent<NPC>().EnterShop();
-            currentNPC = null;
-        }
-    }
-}
-🧍 NPC içeri girme davranışı
-using UnityEngine;
-
-public class NPC : MonoBehaviour
-{
-    public Transform targetPoint;
-    public float speed = 2f;
-
-    public void EnterShop()
-    {
-        StartCoroutine(MoveToTarget());
-    }
-
-    System.Collections.IEnumerator MoveToTarget()
-    {
-        while (Vector3.Distance(transform.position, targetPoint.position) > 0.1f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPoint.position, speed * Time.deltaTime);
-            yield return null;
-        }
-
-        Debug.Log("Müşteri tezgaha geldi");
-    }
-}
-🌙 2. GECE SİSTEMİ (oyunu bağımlılık yapan şey)
-
-Amaç:
-👉 Gece ilerledikçe işler zorlaşır
-👉 Daha fazla paranormal olay
-👉 Daha fazla stres
-
-🌒 Night Manager
-using UnityEngine;
-
-public class NightManager : MonoBehaviour
-{
-    public int night = 1;
-    public float difficultyMultiplier = 1f;
-
-    public void NextNight()
-    {
-        night++;
-        difficultyMultiplier += 0.5f;
-
-        Debug.Log("Gece: " + night);
-
-        // Zorluk artışı
-        FindObjectOfType<ParanormalEvents>().IncreaseDifficulty(difficultyMultiplier);
-    }
-}
-👻 Paranormal sistemi zorlaştır
-public float eventSpeed = 10f;
-
-public void IncreaseDifficulty(float multiplier)
-{
-    eventSpeed = Mathf.Max(2f, eventSpeed / multiplier);
-    CancelInvoke();
-    InvokeRepeating("TriggerEvent", eventSpeed, eventSpeed);
-}
-😈 3. GERİLİM SİSTEMİ (asıl bağımlılık burada)
-
-Oyuncu ne kadar oynarsa:
-👉 daha fazla müşteri
-👉 daha fazla korku
-👉 daha az kontrol
-
-🎯 Kombinasyon
-Kapı çalar 🚪
-Oyuncu açar
-Müşteri gelir 🧍
-Sipariş verir ☕
-Ama… bazen paranormal 😨
-Sanity düşer
-Gece ilerler 🌙
-Oyun zorlaşır
-💀 BONUS (videodaki en kritik his)
-
-Bunu EKLERSEN oyun efsane olur:
-
-🧠 “Oyuncuya bakan NPC”
-void Update()
-{
-    if (isParanormal)
-    {
-        transform.LookAt(Camera.main.transform);
-    }
-}
+        window.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            if (key === 'w') topPos = Math.max(0, topPos - 5);
+            if (key === 's') topPos = Math.min(90, topPos + 5);
+            if (key === 'a') leftPos = Math.max(0, leftPos - 5);
+            if (key === 'd') leftPos = Math.min(95, leftPos + 5);
+            if (e.code === 'Space') player.style.background = '#' + Math.floor(Math.random()*16777215).toString(16);
+            
+            player.style.top = topPos + '%';
+            player.style.left = leftPos + '%';
+        });
+    </script>
+</body>
+</html>
