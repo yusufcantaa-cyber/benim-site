@@ -1,0 +1,114 @@
+🧱 Door System
+using UnityEngine;
+
+public class DoorSystem : MonoBehaviour
+{
+    public Transform spawnPoint;
+    public GameObject npcPrefab;
+    private GameObject currentNPC;
+
+    public void SpawnCustomer()
+    {
+        if (currentNPC != null) return;
+
+        currentNPC = Instantiate(npcPrefab, spawnPoint.position, spawnPoint.rotation);
+        Debug.Log("Kapıda biri var...");
+    }
+
+    public void OpenDoor()
+    {
+        if (currentNPC != null)
+        {
+            Debug.Log("Müşteri içeri alındı");
+            currentNPC.GetComponent<NPC>().EnterShop();
+            currentNPC = null;
+        }
+    }
+}
+🧍 NPC içeri girme davranışı
+using UnityEngine;
+
+public class NPC : MonoBehaviour
+{
+    public Transform targetPoint;
+    public float speed = 2f;
+
+    public void EnterShop()
+    {
+        StartCoroutine(MoveToTarget());
+    }
+
+    System.Collections.IEnumerator MoveToTarget()
+    {
+        while (Vector3.Distance(transform.position, targetPoint.position) > 0.1f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPoint.position, speed * Time.deltaTime);
+            yield return null;
+        }
+
+        Debug.Log("Müşteri tezgaha geldi");
+    }
+}
+🌙 2. GECE SİSTEMİ (oyunu bağımlılık yapan şey)
+
+Amaç:
+👉 Gece ilerledikçe işler zorlaşır
+👉 Daha fazla paranormal olay
+👉 Daha fazla stres
+
+🌒 Night Manager
+using UnityEngine;
+
+public class NightManager : MonoBehaviour
+{
+    public int night = 1;
+    public float difficultyMultiplier = 1f;
+
+    public void NextNight()
+    {
+        night++;
+        difficultyMultiplier += 0.5f;
+
+        Debug.Log("Gece: " + night);
+
+        // Zorluk artışı
+        FindObjectOfType<ParanormalEvents>().IncreaseDifficulty(difficultyMultiplier);
+    }
+}
+👻 Paranormal sistemi zorlaştır
+public float eventSpeed = 10f;
+
+public void IncreaseDifficulty(float multiplier)
+{
+    eventSpeed = Mathf.Max(2f, eventSpeed / multiplier);
+    CancelInvoke();
+    InvokeRepeating("TriggerEvent", eventSpeed, eventSpeed);
+}
+😈 3. GERİLİM SİSTEMİ (asıl bağımlılık burada)
+
+Oyuncu ne kadar oynarsa:
+👉 daha fazla müşteri
+👉 daha fazla korku
+👉 daha az kontrol
+
+🎯 Kombinasyon
+Kapı çalar 🚪
+Oyuncu açar
+Müşteri gelir 🧍
+Sipariş verir ☕
+Ama… bazen paranormal 😨
+Sanity düşer
+Gece ilerler 🌙
+Oyun zorlaşır
+💀 BONUS (videodaki en kritik his)
+
+Bunu EKLERSEN oyun efsane olur:
+
+🧠 “Oyuncuya bakan NPC”
+void Update()
+{
+    if (isParanormal)
+    {
+        transform.LookAt(Camera.main.transform);
+    }
+}
